@@ -1,0 +1,123 @@
+## Part 1
+class BinaryTree:
+    def __init__(self, spec, data = None, leftChild = None, rightChild = None):
+        # add your code here
+        self.spec = spec
+        if type(spec) == type(1) or type(spec) == type(" "):
+            self.data = spec
+            self.leftChild = None
+            self.rightChild = None
+        elif len(spec) == 0:
+            pass
+        elif len(spec)==2:
+            self.data = spec[0]
+            self.leftChild = BinaryTree(spec[1])
+            self.rightChild = None
+        elif len(spec) == 3:
+            self.data = spec[0]
+            self.leftChild = BinaryTree(spec[1])
+            self.rightChild = BinaryTree(spec[2])
+        
+    def printpreorder(self):
+        print(self.data)
+        if self.leftChild:
+            self.leftChild.printpreorder()
+        if self.rightChild:
+            self.rightChild.printpreorder()
+            
+class Tree:
+    def __init__(self, spec):
+        if type(spec) is tuple or type(spec) is list:
+            self.data = spec[0]
+            self.children = [Tree(subSpec) for subSpec in spec[1:]]
+        else:
+            self.data = spec
+            self.children = []
+    
+    def printpreorder(self): 
+        print(self.data) 
+        for child in self.children: 
+            child.printpreorder()
+
+    ## Part 2
+    def printbookcontent(self, addr = " "):
+        counter = 0
+        title = self.data[0]
+        page = self.data[1]
+        if addr == " ":
+            print("Book title: " + title)
+        else:
+            print(addr, title + ", Page", page)
+        for child in self.children:
+            counter+=1
+            if addr == " ":
+                child.printbookcontent(str(counter))
+            else:
+                child.printbookcontent(addr + "." + str(counter))
+              
+    ## Part 3
+    def computespace(self):
+        temp = 0
+        for child in self.children:
+            temp += child.computespace()
+        if self.data[1] == None:
+            self.data = (self.data[0], temp)
+        return self.data[1]
+            
+         
+    def printExpr(self): 
+        sOut = ""
+        if len(self.children) > 0:
+            sOut += '(' + self.children[0].printExpr() + ')'
+        sOut += str(self.data)
+        if len(self.children) > 1:
+            sOut += '(' + self.children[1].printExpr() + ')' 
+        return sOut
+    
+    def computeValue(self): 
+        childValues = [x.computeValue() for x in self.children]
+        return value(self.data, childValues)
+    
+    def compute(self, evalFunc): 
+        childValues = [x.compute(evalFunc) for x in self.children]
+        return evalFunc(self.data, childValues)
+
+
+## Part 4
+def value(data, values):
+    if type(data) is int and values == []:
+        return float(data)
+    elif data == 'sum':
+        return sum(values)
+    elif (data == '+'):
+        return values[0] + values[1]
+    elif (data == '-'):
+        return values[0] - values[1]
+    elif (data == '*'):
+        return values[0]*values[1]
+    elif (data == '/'):
+        return values[0]/values[1]
+    elif (data == "min"):
+        return min(values)
+    elif (data == "max"):
+        return max(values)
+    elif (data == "avg"):
+        return sum(values)/len(values)
+    # add your code here
+    
+
+## Part 5
+def spaceusage(data, values):
+    if data[1] != None:
+        return data[1]
+    else:
+        return sum(values)
+        
+        
+            
+
+
+
+
+
+
